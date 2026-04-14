@@ -1,0 +1,32 @@
+{
+  "name": "webmcp-adapter",
+  "version": "0.1.0",
+  "description": "Turn any async function into a fully managed WebMCP tool",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@mcp-b/global": ">=2.0.0"
+  },
+  "devDependencies": {
+    "@mcp-b/global": "^2.2.0",
+    "@mcp-b/webmcp-types": "^2.2.0",
+    "tsup": "^8.0.0",
+    "typescript": "^6.0.2"
+  },
+  "keywords": ["webmcp", "mcp", "ai-agent", "browser"],
+  "license": "MIT"
+}

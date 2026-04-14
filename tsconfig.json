@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "outDir": "dist/types",
+    "module": "esnext",
+    "target": "ES2020",
+    "allowJs": true,
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "lib": ["dom", "dom.iterable", "es6"],
+    "moduleResolution": "node",
+  },
+  "include": ["src/**/*", "webmcp.d.ts"]
+}
