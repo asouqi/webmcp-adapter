@@ -46,7 +46,7 @@ export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinit
         try {
             let validationResult
 
-            if (tool.validator && isStandardSchema(tool.schema)) {
+            if (tool.validator && isStandardSchema(tool.validator)) {
                 validationResult = await validateWithStandardSchema(tool.validator, input)
             } else {
                 validationResult = validateJsonSchema(tool.schema, input)

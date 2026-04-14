@@ -58,7 +58,7 @@ export function validateJsonSchema(schema: InputSchema, input: unknown): Validat
                 if (!(key in objectInput) || objectInput[key] === undefined) {
                     return {
                         valid: false,
-                        error: `Missing required filed: ${key}`
+                        error: `Missing required field: ${key}`
                     }
                 }
             }
@@ -83,7 +83,7 @@ export function validateJsonSchema(schema: InputSchema, input: unknown): Validat
         const arraySchema = schema as JsonSchemaArray
         if(arraySchema.items) {
             for (let i = 0; i < input.length; i++) {
-                const result = validateJsonSchema(input[i], arraySchema.items)
+                const result = validateJsonSchema(arraySchema.items as InputSchema, input[i])
                 if (!result.valid) {
                     return {
                         valid: false,
