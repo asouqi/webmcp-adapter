@@ -1,5 +1,6 @@
 import {ToolConfig, ToolDefinition, UnregisterFn} from "./types"
 import {isWebMCPSupported} from "./utils";
+import {isStandardSchema, validateJsonSchema, validateWithStandardSchema} from "./validator";
 
 export function defineTool<TInput = Record<string, unknown>>(config: ToolConfig<TInput>): ToolDefinition<TInput> {
    return {
@@ -7,6 +8,7 @@ export function defineTool<TInput = Record<string, unknown>>(config: ToolConfig<
        description: config.description,
        schema: config.schema,
        annotations: config.annotations ?? {},
+       validator: config.validator,
        execute: config.execute
    }
 }
@@ -42,6 +44,21 @@ export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinit
     // Wrap execute with error handling
     const wrappedExecute = async (input) => {
         try {
+            let validationResult
+
+            if (tool.validator && isStandardSchema(tool.schema)) {
+                validationResult = await validateWithStandardSchema(tool.validator, input)
+            } else {
+                validationResult = validateJsonSchema(tool.schema, input)
+            }
+
+            if (!validationResult.valid) {
+                return {
+                    content: [{ type: 'text', text: `Validation error: ${validationResult.error}` }],
+                    isError: true
+                }
+            }
+
             return await tool.execute(input)
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e)
