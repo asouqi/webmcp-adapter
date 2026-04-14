@@ -1,7 +1,7 @@
 {
   "name": "webmcp-adapter",
   "version": "0.1.0",
-  "description": "Turn any async function into a fully managed WebMCP tool",
+  "description": "Lightweight adapter for WebMCP — define, register, and manage AI agent tools with built-in schema validation and error handling.  ",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

@@ -56,6 +56,7 @@ export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinit
         ...tool,
         execute: wrappedExecute
     })
+    registeredTools.add(tool.name)
 
     return () => {
         if (registeredTools.has(tool.name)) {
