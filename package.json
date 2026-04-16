@@ -7,15 +7,15 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "files": ["dist"],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "build": "vite build",
+    "dev": "vite build --watch",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -24,9 +24,15 @@
   "devDependencies": {
     "@mcp-b/global": "^2.2.0",
     "@mcp-b/webmcp-types": "^2.2.0",
-    "tsup": "^8.0.0",
-    "typescript": "^6.0.2"
+    "typescript": "^5.9.3",
+    "vite": "^8.0.8",
+    "vite-plugin-dts": "^4.5.4"
   },
-  "keywords": ["webmcp", "mcp", "ai-agent", "browser"],
+  "keywords": [
+    "webmcp",
+    "mcp",
+    "ai-agent",
+    "browser"
+  ],
   "license": "MIT"
 }

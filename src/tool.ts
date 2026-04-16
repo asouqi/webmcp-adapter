@@ -13,8 +13,8 @@ export function defineTool<TInput = Record<string, unknown>>(config: ToolConfig<
    }
 }
 
-/** Tracks registered tool names for cleanup */
-const registeredTools = new Set<string>()
+/** Tracks tool ownership for safe cleanup */
+const TOOL_OWNER_BY_NAME = new Map<string, symbol>()
 
 /**
  * Registers a tool with WebMCP.
@@ -73,12 +73,15 @@ export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinit
         ...tool,
         execute: wrappedExecute
     })
-    registeredTools.add(tool.name)
+
+    const ownerToken = Symbol(tool.name)
+    TOOL_OWNER_BY_NAME.set(tool.name, ownerToken)
 
     return () => {
-        if (registeredTools.has(tool.name)) {
+        const currentToken = TOOL_OWNER_BY_NAME.get(tool.name)
+        if (currentToken === ownerToken) {
             navigator.modelContext.unregisterTool(tool.name)
-            registeredTools.delete(tool.name)
+            TOOL_OWNER_BY_NAME.delete(tool.name)
         }
     }
 }
@@ -129,13 +132,13 @@ export function registerBatch(tools: ToolDefinition[]): UnregisterFn {
  * @returns `true` if the tool was found and removed, `false` otherwise
  */
 export function unregisterTool(name: string) {
-    if (!registeredTools.has(name)) {
+    if (!TOOL_OWNER_BY_NAME.has(name)) {
         return false
     }
     if (isWebMCPSupported()) {
         navigator.modelContext.unregisterTool(name)
     }
-    registeredTools.delete(name)
+    TOOL_OWNER_BY_NAME.delete(name)
     return true
 }
 
@@ -163,9 +166,9 @@ export function unregisterTool(name: string) {
  */
 export function unregisterAllTools() {
     if (isWebMCPSupported()){
-        registeredTools.forEach(name => {
-            navigator.modelContext.unregisterTool(name)
+        TOOL_OWNER_BY_NAME.forEach(name => {
+            navigator.modelContext.unregisterTool(name.toString())
         })
     }
-    registeredTools.clear()
+    TOOL_OWNER_BY_NAME.clear()
 }

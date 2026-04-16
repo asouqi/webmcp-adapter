@@ -2,12 +2,15 @@ import { ToolDefinition, ToolConfig, UnregisterFn, ValidationResult, StandardSch
 import { isWebMCPSupported } from "./utils"
 import { defineTool, registerTool, registerBatch, unregisterTool, unregisterAllTools} from "./tool"
 
-export {
+export type {
     ToolDefinition,
     ToolConfig,
     UnregisterFn,
     ValidationResult,
     StandardSchema,
+}
+
+export {
     isWebMCPSupported,
     defineTool,
     registerTool,
