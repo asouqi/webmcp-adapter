@@ -7,13 +7,14 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@mcp-b/webmcp-types':
+        specifier: ^2.2.0
+        version: 2.2.0
     devDependencies:
       '@mcp-b/global':
         specifier: ^2.2.0
         version: 2.2.0(zod@3.25.76)
-      '@mcp-b/webmcp-types':
-        specifier: ^2.2.0
-        version: 2.2.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
