@@ -1,4 +1,4 @@
-import {InputSchema, JsonSchemaForInference} from "@mcp-b/webmcp-types"
+import {InferArgsFromInputSchema, InputSchema} from "@mcp-b/webmcp-types"
 import {isWebMCPSupported} from "./utils";
 import {isStandardSchema, validateJsonSchema, validateWithStandardSchema} from "./validator";
 import {ToolConfig, ToolDefinition, UnregisterFn} from "./types"
@@ -37,20 +37,20 @@ const TOOL_OWNER_BY_NAME = new Map<string, symbol>()
  * unregister()
  * ```
  */
-export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinition<TInput>): UnregisterFn {
+export function registerTool<TSchema extends InputSchema = InputSchema>(tool: ToolDefinition<TSchema>): UnregisterFn {
     if (!isWebMCPSupported()) {
         return () => {}
     }
 
     // Wrap execute with error handling
-    const wrappedExecute = async (input) => {
+    const wrappedExecute = async (input: InferArgsFromInputSchema<TSchema>) => {
         try {
             let validationResult
 
             if (tool.validator && isStandardSchema(tool.validator)) {
                 validationResult = await validateWithStandardSchema(tool.validator, input)
             } else {
-                validationResult = validateJsonSchema(tool.schema as JsonSchemaForInference, input)
+                validationResult = validateJsonSchema(tool.schema, input)
             }
 
             if (!validationResult.valid) {
@@ -167,8 +167,8 @@ export function unregisterTool(name: string) {
  */
 export function unregisterAllTools() {
     if (isWebMCPSupported()){
-        TOOL_OWNER_BY_NAME.forEach(name => {
-            navigator.modelContext.unregisterTool(name.toString())
+        TOOL_OWNER_BY_NAME.forEach((_, name) => {
+            navigator.modelContext.unregisterTool(name)
         })
     }
     TOOL_OWNER_BY_NAME.clear()

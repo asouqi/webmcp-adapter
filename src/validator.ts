@@ -1,5 +1,13 @@
 import { StandardSchema, ValidationResult } from "./types"
-import { JsonSchemaForInference, JsonSchemaArray, JsonSchemaNumber, JsonSchemaString } from "@mcp-b/webmcp-types"
+import {
+    JsonSchemaArray,
+    JsonSchemaNumber,
+    JsonSchemaString,
+    InputSchema,
+    JsonSchemaForInference
+} from "@mcp-b/webmcp-types"
+
+type Schema = InputSchema | JsonSchemaForInference
 
 /**
  * Checks if a value implements the Standard Schema interface.
@@ -32,7 +40,7 @@ export async function validateWithStandardSchema(schema: StandardSchema, input: 
  * Validates input against a JSON Schema.
  * Lightweight validator covering common use cases.
  */
-export function validateJsonSchema(schema: JsonSchemaForInference, input: unknown): ValidationResult {
+export function validateJsonSchema(schema: Schema, input: unknown): ValidationResult {
     // Handle missing input
     if (input === undefined || input === null) {
         if (schema.type === "object" && schema.required && schema.required.length > 0) {
@@ -114,7 +122,7 @@ export function validateJsonSchema(schema: JsonSchemaForInference, input: unknow
 /**
  * Validates that input matches the expected type.
  */
-function validateType(input: unknown, schema: JsonSchemaForInference) {
+function validateType(input: unknown, schema: Schema) {
     const schemaType = schema.type
 
     if (!schemaType) {
@@ -135,7 +143,7 @@ function validateType(input: unknown, schema: JsonSchemaForInference) {
 /**
  * Checks if input matches a single type.
  */
-function matchType(type: string, input: unknown, schema: JsonSchemaForInference) {
+function matchType(type: string, input: unknown, schema: Schema) {
     switch (type) {
         case "string":
             if (typeof input !== "string") return false
@@ -161,7 +169,7 @@ function matchType(type: string, input: unknown, schema: JsonSchemaForInference)
 /**
  * Validates string-specific constraints.
  */
-function validateStringConstraints(input: string, schema: JsonSchemaForInference) {
+function validateStringConstraints(input: string, schema: Schema) {
     const s = schema as JsonSchemaString
     if (s.minLength !== undefined && input.length < s.minLength) return false
     if (s.maxLength !== undefined && input.length > s.maxLength) return false
@@ -172,7 +180,7 @@ function validateStringConstraints(input: string, schema: JsonSchemaForInference
 /**
  * Validates number-specific constraints.
  */
-function validateNumberConstraints(input: number, schema: JsonSchemaForInference) {
+function validateNumberConstraints(input: number, schema: Schema) {
     const n = schema as JsonSchemaNumber
     if (n.minimum !== undefined && input < n.minimum) return false
     if (n.maximum !== undefined && input > n.maximum) return false

@@ -11,7 +11,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "suppressImplicitAnyIndexErrors": true,
-    "lib": ["dom", "dom.iterable", "es6", "es2017.object"],
+    "lib": ["dom", "dom.iterable", "es6", "es2016", "es2017.object"],
     "moduleResolution": "node",
   },
   "include": ["src/**/*", "webmcp.d.ts"]
