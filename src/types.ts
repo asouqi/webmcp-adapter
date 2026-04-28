@@ -1,4 +1,4 @@
-import {InputSchema, ToolAnnotations, ToolResponse} from "@mcp-b/webmcp-types";
+import {InputSchema, InferArgsFromInputSchema, ToolAnnotations, ToolResponse} from "@mcp-b/webmcp-types";
 
 export interface ValidationResult {
     valid: boolean
@@ -21,7 +21,7 @@ export interface StandardSchema {
 /**
  * Configuration for defining a tool via `defineTool()`.
  */
-export interface ToolConfig<TInput = Record<string, unknown>> {
+export interface ToolConfig<TSchema extends InputSchema = InputSchema> {
     /** Unique tool name (snake_case recommended) */
     name: string
 
@@ -41,19 +41,19 @@ export interface ToolConfig<TInput = Record<string, unknown>> {
     validator?: StandardSchema
 
     /** Function executed when the tool is called */
-    execute: (input: TInput) => Promise<ToolResponse> | ToolResponse
+    execute: (input: InferArgsFromInputSchema<TSchema>) => Promise<ToolResponse> | ToolResponse
 }
 
 /**
  * Normalized tool definition returned by `defineTool()`.
  */
-export interface ToolDefinition<TInput = Record<string, unknown>> {
+export interface ToolDefinition<TSchema extends InputSchema = InputSchema> {
     readonly name: string
     readonly description: string
-    readonly schema: InputSchema
+    readonly schema: TSchema
     readonly annotations: ToolAnnotations
     readonly validator?: StandardSchema
-    readonly execute: (input: TInput) => Promise<ToolResponse> | ToolResponse
+    readonly execute: (input: InferArgsFromInputSchema<TSchema>) => Promise<ToolResponse> | ToolResponse
 }
 
 export type UnregisterFn = () => void

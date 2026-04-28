@@ -1,12 +1,13 @@
-import {ToolConfig, ToolDefinition, UnregisterFn} from "./types"
+import {InputSchema, JsonSchemaForInference} from "@mcp-b/webmcp-types"
 import {isWebMCPSupported} from "./utils";
 import {isStandardSchema, validateJsonSchema, validateWithStandardSchema} from "./validator";
+import {ToolConfig, ToolDefinition, UnregisterFn} from "./types"
 
-export function defineTool<TInput = Record<string, unknown>>(config: ToolConfig<TInput>): ToolDefinition<TInput> {
+export function defineTool<TSchema extends InputSchema = InputSchema>(config: ToolConfig<TSchema>): ToolDefinition<TSchema> {
    return {
        name: config.name,
        description: config.description,
-       schema: config.schema,
+       schema: config.schema as TSchema,
        annotations: config.annotations ?? {},
        validator: config.validator,
        execute: config.execute
@@ -49,7 +50,7 @@ export function registerTool<TInput = Record<string, unknown>>(tool: ToolDefinit
             if (tool.validator && isStandardSchema(tool.validator)) {
                 validationResult = await validateWithStandardSchema(tool.validator, input)
             } else {
-                validationResult = validateJsonSchema(tool.schema, input)
+                validationResult = validateJsonSchema(tool.schema as JsonSchemaForInference, input)
             }
 
             if (!validationResult.valid) {

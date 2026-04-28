@@ -2,6 +2,8 @@ import { ToolDefinition, ToolConfig, UnregisterFn, ValidationResult, StandardSch
 import { isWebMCPSupported } from "./utils"
 import { defineTool, registerTool, registerBatch, unregisterTool, unregisterAllTools} from "./tool"
 
+export type { InputSchema } from '@mcp-b/webmcp-types';
+
 export type {
     ToolDefinition,
     ToolConfig,

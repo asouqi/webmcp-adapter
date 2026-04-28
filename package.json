@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@mcp-b/global": ">=2.0.0"
+    "@mcp-b/global": ">=2.0.0",
+    "@mcp-b/webmcp-types": "^2.2.0"
   },
   "devDependencies": {
     "@mcp-b/global": "^2.2.0",
