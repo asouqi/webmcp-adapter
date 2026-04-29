@@ -35,7 +35,7 @@ A global reset that removes every tool registered via this adapter. Useful for l
 ### `isWebMCPSupported()`
 A utility function that returns `true` if the current environment (browser/extension) supports the `navigator.modelContext` API.
 
-### 🛡️ Runtime Validation (Zod, Valibot, etc.)
+## 🛡️ Runtime Validation (Zod, Valibot, etc.)
 
 `webmcp-adapter` natively supports [Standard Schema](https://github.com/standard-schema/standard-schema) validation, or you can use libraries like **Zod** or **Valibot** for you schema and to validate AI inputs *before* your tool executes.
 
