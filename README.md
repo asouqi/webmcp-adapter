@@ -35,6 +35,44 @@ A global reset that removes every tool registered via this adapter. Useful for l
 ### `isWebMCPSupported()`
 A utility function that returns `true` if the current environment (browser/extension) supports the `navigator.modelContext` API.
 
+### 🛡️ Runtime Validation (Zod, Valibot, etc.)
+
+`webmcp-adapter` natively supports [Standard Schema](https://github.com/standard-schema/standard-schema) validation, or you can use libraries like **Zod** or **Valibot** for you schema and to validate AI inputs *before* your tool executes.
+
+```typescript
+import { defineTool, registerTool } from 'webmcp-adapter';
+import { z } from 'zod';
+
+const myZodSchema = z.object({
+  width: z.number().positive(),
+  height: z.number().positive()
+});
+
+const calculateTool = defineTool({
+  name: "calculate_area",
+  description: "Calculates the area of a rectangle",
+  // 1. Provide the JSON schema for the AI model to read
+  schema: {
+    type: "object",
+    properties: {
+      width: { type: "number" },
+      height: { type: "number" }
+    },
+    required: ["width", "height"]
+  },
+  // 2. Provide the Zod schema for strict runtime validation
+  validator: myZodSchema, 
+  execute: async (args) => {
+    // If execution reaches here, 'args' has fully passed Zod validation!
+    const area = args.width * args.height;
+    return {
+      content: [{ type: "text", text: `The area is ${area}` }]
+    };
+  }
+});
+
+registerTool(calculateTool);
+```
 
 ## Quick Start
 
