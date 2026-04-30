@@ -1,6 +1,6 @@
 # WebMCP Adapter
 
-WebMCP Adapter is a lightweight utility designed to register, validate, and manage tool lifecycles within the `navigator.modelContext` environment. By leveraging the official [@mcp-b/webmcp-types](https://github.com/WebMCP-org/npm-packages) for its type system, the library automatically infers TypeScript argument types directly from your JSON schemas. This ensures your tools remain strictly compliant with the Model Context Protocol while providing a seamless, "zero-config" developer experience for modern web AI applications.
+A lightweight utility designed to register, validate, and manage tool lifecycles within the `navigator.modelContext` environment. By leveraging the official [@mcp-b/webmcp-types](https://github.com/WebMCP-org/npm-packages) for its type system, the library automatically infers TypeScript argument types directly from your JSON schemas. This ensures your tools remain strictly compliant with the Model Context Protocol while providing a seamless, "zero-config" developer experience for modern web AI applications.
 
 ## 🧠 What is WebMCP?
 The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that enables AI models to securely connect to local and remote tools. [WebMCP](https://webmcp.dev/) brings this concept to the browser via the experimental `navigator.modelContext` API, allowing web applications to expose client-side tools directly to AI assistants.
