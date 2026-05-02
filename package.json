@@ -1,6 +1,6 @@
 {
   "name": "webmcp-adapter",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Lightweight adapter for WebMCP — define, register, and manage AI agent tools with built-in schema validation and error handling.",
   "type": "module",
   "main": "./dist/index.js",
