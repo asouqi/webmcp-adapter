@@ -7,6 +7,8 @@ These features are critical for developers building dynamic applications (like R
     - *Why:* Allows developers and higher-level libraries to check if a tool is already registered before trying to mount it, preventing duplicate registration errors during Hot Module Replacement (HMR) or React Strict Mode.
 - [ ] **Implement `getRegisteredTools(): ToolDefinition[]` (or string[])**
     - *Why:* Provides a way to inspect the current state. Essential for building UI components that show users which AI tools are currently active.
+- [ ] **Support Complex JSON Schema Validation**
+  - *Why:* Enhance the internal `validateJsonSchema` utility to fully support advanced JSON Schema keywords like `oneOf`, `anyOf`, `allOf`, `if`, and `then`. This ensures that highly complex, conditional AI tool schemas are strictly evaluated at runtime without forcing developers to use external validation libraries.
 
 ## 🟡 (Execution & Middleware)
 These features improve the user experience and give developers more control over how tools run.

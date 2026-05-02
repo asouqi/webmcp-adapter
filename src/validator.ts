@@ -41,6 +41,61 @@ export async function validateWithStandardSchema(schema: StandardSchema, input: 
  * Lightweight validator covering common use cases.
  */
 export function validateJsonSchema(schema: Schema, input: unknown): ValidationResult {
+    // Handle const (exact value match)
+    if ('const' in schema) {
+        if (input !== schema.const) {
+            return {
+                valid: false,
+                error: `Expected value to be ${JSON.stringify(schema.const)}`
+            }
+        }
+        return { valid: true }
+    }
+
+    // Handle oneOf/anyOf (validates against at least one schema)
+    if ("oneOf" in schema && Array.isArray(schema.oneOf) ||
+        "oneOf" in schema && Array.isArray(schema.anyOf)) {
+        const schemas = ('oneOf' in schema ? schema.oneOf : schema.anyOf) as Schema[]
+        for (const subSchema of schemas) {
+            const result = validateJsonSchema(subSchema, input)
+            if (result.valid) {
+                return { valid: true }
+            }
+        }
+        return {
+            valid: false,
+            error: "Value does not match any of the allowed schemas"
+        }
+    }
+
+    // Handle allOf (validates against all schemas)
+    if ("allOf" in schema && Array.isArray(schema.allOf)) {
+        for (const subSchema of schema.allOf) {
+            const result = validateJsonSchema(subSchema, input)
+            if (!result.valid) {
+                return result
+            }
+        }
+        return { valid: true }
+    }
+
+    // Handle if/then/else conditionals
+    if ("if" in schema && schema.if) {
+        const ifResult = validateJsonSchema(schema.if as Schema, input)
+
+        if (ifResult.valid && "then" in schema && schema.then) {
+            const thenResult = validateJsonSchema(schema.then as Schema, input)
+            if (!thenResult.valid) {
+                return thenResult
+            }
+        } else if (!ifResult.valid && "else" in schema && schema.else) {
+            const elseResult = validateJsonSchema(schema.else as Schema, input)
+            if (!elseResult.valid) {
+                return elseResult
+            }
+        }
+    }
+
     // Handle missing input
     if (input === undefined || input === null) {
         if (schema.type === "object" && schema.required && schema.required.length > 0) {
@@ -59,7 +114,7 @@ export function validateJsonSchema(schema: Schema, input: unknown): ValidationRe
     }
 
     // Validate object properties
-    if (schema.type === "object" && typeof input === "object" && !Array.isArray(input)) {
+    if ('properties' in schema && schema.properties && typeof input === "object" && !Array.isArray(input)) {
         const objectInput = input as Record<string, unknown>
         if (schema.required) {
             for (const key of schema.required){
@@ -174,6 +229,15 @@ function validateStringConstraints(input: string, schema: Schema) {
     if (s.minLength !== undefined && input.length < s.minLength) return false
     if (s.maxLength !== undefined && input.length > s.maxLength) return false
     if (s.enum !== undefined && !s.enum.includes(input)) return false
+
+    if (s.pattern !== undefined) {
+        try {
+          const regex = new RegExp(s.pattern)
+          if (!regex.test(input)) return false
+        } catch {
+            console.warn(`Invalid regex pattern: ${s.pattern}`)
+        }
+    }
     return true
 }
 
