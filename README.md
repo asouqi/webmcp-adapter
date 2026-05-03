@@ -37,7 +37,11 @@ A utility function that returns `true` if the current environment (browser/exten
 
 ## 🛡️ Runtime Validation (Zod, Valibot, etc.)
 
-`webmcp-adapter` natively supports [Standard Schema](https://github.com/standard-schema/standard-schema) validation, or you can use libraries like **Zod** or **Valibot** for you schema and to validate AI inputs *before* your tool executes.
+While the browser's native WebMCP API (`navigator.modelContext.registerTool`) automatically performs basic JSON Schema validation, `webmcp-adapter` adds a crucial layer of **advanced runtime validation and graceful error handling**.
+
+If an AI model provides invalid input, native validation might throw a hard error. `webmcp-adapter` intercepts this and returns a formatted `isError: true` response back to the model. **This allows the AI to see exactly why its input failed and try again**, rather than simply crashing.
+
+Additionally, the adapter natively supports [Standard Schema](https://github.com/standard-schema/standard-schema), meaning you can use libraries like **Zod** or **Valibot** to enforce strict constraints (like regex, emails, or custom logic) that basic JSON Schema cannot handle.
 
 ```typescript
 import { defineTool, registerTool } from 'webmcp-adapter';
@@ -51,7 +55,7 @@ const myZodSchema = z.object({
 const calculateTool = defineTool({
   name: "calculate_area",
   description: "Calculates the area of a rectangle",
-  // 1. Provide the JSON schema for the AI model to read
+  // 1. Provide the JSON schema for the native browser WebMCP to read
   schema: {
     type: "object",
     properties: {
@@ -60,10 +64,10 @@ const calculateTool = defineTool({
     },
     required: ["width", "height"]
   },
-  // 2. Provide the Zod schema for strict runtime validation
+  // 2. Provide the Zod schema for strict runtime validation and AI error recovery
   validator: myZodSchema, 
   execute: async (args) => {
-    // If execution reaches here, 'args' has fully passed Zod validation!
+    // If execution reaches here, 'args' has fully passed BOTH browser and Zod validation!
     const area = args.width * args.height;
     return {
       content: [{ type: "text", text: `The area is ${area}` }]
