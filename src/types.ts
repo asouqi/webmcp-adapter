@@ -29,7 +29,7 @@ export interface ToolConfig<TSchema extends InputSchema = InputSchema> {
     description: string
 
     /** JSON Schema defining the input parameters */
-    schema: InputSchema
+    inputSchema: InputSchema
 
     /** Optional WebMCP annotations */
     annotations?: ToolAnnotations
@@ -50,7 +50,7 @@ export interface ToolConfig<TSchema extends InputSchema = InputSchema> {
 export interface ToolDefinition<TSchema extends InputSchema = InputSchema> {
     readonly name: string
     readonly description: string
-    readonly schema: TSchema
+    readonly inputSchema: TSchema
     readonly annotations: ToolAnnotations
     readonly validator?: StandardSchema
     readonly execute: (input: InferArgsFromInputSchema<TSchema>) => Promise<ToolResponse> | ToolResponse

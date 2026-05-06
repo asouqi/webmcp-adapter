@@ -3,7 +3,7 @@ import { isWebMCPSupported } from "./utils"
 import { defineTool, registerTool, registerBatch, unregisterTool, unregisterAllTools} from "./tool"
 import { validateJsonSchema } from "./validator"
 
-export type { InputSchema } from '@mcp-b/webmcp-types'
+export type { InputSchema, JsonValue } from '@mcp-b/webmcp-types'
 
 export type {
     ToolDefinition,

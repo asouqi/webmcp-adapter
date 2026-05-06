@@ -7,7 +7,7 @@ export function defineTool<TSchema extends InputSchema = InputSchema>(config: To
    return {
        name: config.name,
        description: config.description,
-       schema: config.schema as TSchema,
+       inputSchema: config.inputSchema as TSchema,
        annotations: config.annotations ?? {},
        validator: config.validator,
        execute: config.execute
@@ -50,7 +50,7 @@ export function registerTool<TSchema extends InputSchema = InputSchema>(tool: To
             if (tool.validator && isStandardSchema(tool.validator)) {
                 validationResult = await validateWithStandardSchema(tool.validator, input)
             } else {
-                validationResult = validateJsonSchema(tool.schema, input)
+                validationResult = validateJsonSchema(tool.inputSchema, input)
             }
 
             if (!validationResult.valid) {
@@ -73,7 +73,7 @@ export function registerTool<TSchema extends InputSchema = InputSchema>(tool: To
     navigator.modelContext.registerTool({
         ...tool,
         execute: wrappedExecute
-    })
+    } as ToolConfig<TSchema>)
 
     const ownerToken = Symbol(tool.name)
     TOOL_OWNER_BY_NAME.set(tool.name, ownerToken)
