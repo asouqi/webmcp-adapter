@@ -24,16 +24,33 @@ export function isStandardSchema(value: unknown): value is StandardSchema {
 /**
  * Validates input using a Standard Schema validator.
  */
-export async function validateWithStandardSchema(schema: StandardSchema, input: unknown): Promise<ValidationResult> {
+export async function validateWithStandardSchema(
+    schema: StandardSchema,
+    input: unknown
+): Promise<ValidationResult> {
     const result = await schema["~standard"].validate(input)
 
     if (result.issues && result.issues.length > 0) {
-        const issues = result.issues[0]
-        const path = issues.path?.join('.') || ''
-        const error = path ? `${path}: ${issues.message}` : issues.message
-        return { valid: false, error }
+        const errors: Record<string, string> = {}
+
+        for (const issue of result.issues) {
+            const path = issue.path?.join('.') || '_form'
+            // first error per path wins
+            if (!errors[path]) {
+                errors[path] = issue.message
+            }
+        }
+
+        return {
+            valid: false,
+            error: Object.entries(errors)      // summary string kept for compat
+                .map(([p, m]) => p === '_form' ? m : `${p}: ${m}`)
+                .join(', '),
+            errors
+        }
     }
-    return { valid: true }
+
+    return { valid: true, errors: {} }
 }
 
 /**

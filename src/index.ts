@@ -1,9 +1,9 @@
 import { ToolDefinition, ToolConfig, UnregisterFn, ValidationResult, StandardSchema } from "./types"
 import { isWebMCPSupported } from "./utils"
-import { defineTool, registerTool, registerBatch, unregisterTool, unregisterAllTools} from "./tool"
+import { defineTool, registerTool, registerBatch, unregisterTool, unregisterAllTools } from "./tool"
 import { validateJsonSchema, isStandardSchema, validateWithStandardSchema } from "./validator"
 
-export type { InputSchema, JsonValue } from '@mcp-b/webmcp-types'
+export type { InputSchema, JsonValue, ToolResponse } from '@mcp-b/webmcp-types'
 
 export type {
     ToolDefinition,
@@ -21,4 +21,6 @@ export {
     unregisterTool,
     unregisterAllTools,
     validateJsonSchema,
+    validateWithStandardSchema,
+    isStandardSchema,
 }

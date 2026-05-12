@@ -56,7 +56,13 @@ export function registerTool<TSchema extends InputSchema = InputSchema>(tool: To
             if (!validationResult.valid) {
                 return {
                     content: [{ type: 'text', text: `Validation error: ${validationResult.error}` }],
-                    isError: true
+                    isError: true,
+                    structuredContent: {
+                        success: false,
+                        validationFailed: true,
+                        error: validationResult.error ?? 'Validation failed',
+                        errors: validationResult.errors ?? {}   // field-keyed map from the updated ValidationResult
+                    }
                 }
             }
 
@@ -65,7 +71,13 @@ export function registerTool<TSchema extends InputSchema = InputSchema>(tool: To
             const message = e instanceof Error ? e.message : String(e)
             return {
                 content: [{type: 'text', text: `Error: ${message}`}],
-                isError: true
+                isError: true,
+                structuredContent: {
+                    success: false,
+                    validationFailed: false,
+                    error: message,
+                    errors: {}
+                }
             }
         }
     }
@@ -172,4 +184,38 @@ export function unregisterAllTools() {
         })
     }
     TOOL_OWNER_BY_NAME.clear()
+}
+
+/**
+ * Checks whether a tool with the given name is currently registered.
+ *
+ * Useful for conditional registration — avoids re-registering a tool
+ * that is already active (e.g. when user state or cart state changes).
+ *
+ * @param name - The name of the tool to check
+ * @returns `true` if the tool is registered, `false` otherwise
+ *
+ * @example
+ * ```typescript
+ * import { hasTool, registerTool } from 'webmcp-adapter'
+ *
+ * if (!hasTool('checkout_form')) {
+ *   registerTool(checkoutTool)
+ * }
+ * ```
+ */
+export function hasTool(name: string): boolean {
+    return TOOL_OWNER_BY_NAME.has(name)
+}
+
+/**
+ * Returns the names of all tools currently registered through this adapter.
+ *
+ * Useful for debugging, logging, or verifying which tools are active
+ * at any point in the application lifecycle.
+ *
+ * @returns Array of registered tool name strings
+ */
+export function getRegisteredTools(): string[] {
+    return Array.from(TOOL_OWNER_BY_NAME.keys())
 }

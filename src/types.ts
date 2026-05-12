@@ -3,6 +3,7 @@ import {InputSchema, InferArgsFromInputSchema, ToolAnnotations, ToolResponse} fr
 export interface ValidationResult {
     valid: boolean
     error?: string
+    errors?: Record<string, string>
 }
 
 export interface StandardSchemaResult {
