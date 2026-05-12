@@ -162,6 +162,8 @@ console.log(getRegisteredTools())
 ```
 
 ```typescript
+import { registerBatch, getRegisteredTools } from 'webmcp-adapter'
+
 // Verify tools registered after a batch
 registerBatch([searchTool, cartTool, checkoutTool])
 console.log(getRegisteredTools().length) // 3
@@ -304,6 +306,8 @@ Compare this to a **runtime error** (an exception thrown inside `execute`), whic
 ```
 
 The `validationFailed` flag lets the model distinguish between **"fix your input and retry"** vs **"something crashed on the server side"**.
+
+---
 
 ## 🔧 Validation Utilities
 
