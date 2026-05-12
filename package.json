@@ -1,6 +1,6 @@
 {
   "name": "webmcp-adapter",
-  "version": "0.0.8",
+  "version": "0.0.7",
   "description": "Lightweight adapter for WebMCP — define, register, and manage AI agent tools with built-in schema validation and error handling.",
   "type": "module",
   "main": "./dist/index.js",
@@ -17,7 +17,11 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
   },
   "dependencies": {
     "@mcp-b/webmcp-types": "^2.2.0"
