@@ -34,8 +34,8 @@ export async function validateWithStandardSchema(
         const errors: Record<string, string> = {}
 
         for (const issue of result.issues) {
-            const path = issue.path?.join('.') || '_form'
-            // first error per path wins
+            const path = issue.path?.map(normalizePathSegment).join('.') || '_form'
+
             if (!errors[path]) {
                 errors[path] = issue.message
             }
@@ -43,7 +43,7 @@ export async function validateWithStandardSchema(
 
         return {
             valid: false,
-            error: Object.entries(errors)      // summary string kept for compat
+            error: Object.entries(errors)
                 .map(([p, m]) => p === '_form' ? m : `${p}: ${m}`)
                 .join(', '),
             errors
@@ -51,6 +51,13 @@ export async function validateWithStandardSchema(
     }
 
     return { valid: true, errors: {} }
+}
+
+function normalizePathSegment(segment: unknown): string | number {
+    if (segment !== null && typeof segment === 'object' && 'key' in segment) {
+        return (segment as { key: string | number }).key
+    }
+    return segment as string | number
 }
 
 /**
